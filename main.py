@@ -156,4 +156,4 @@ def update_user():
 
 app_port = 5000 if 'APP_PORT' not in app.config else app.config['APP_PORT']
 if __name__ == "__main__":
-    app.run(use_reloader=True, debug=True, host='0.0.0.0', port=int(app_port))
+    app.run(use_reloader=True, debug=True, host='localhost', port=int(app_port))
