@@ -1,6 +1,6 @@
 # PepperTrax
 
-Welcome to PepperTrax, a Web application written in Python to help you keep track of your cannabis plants through their growth cycles.
+Welcome to PepperTrax, a Web application written in Python to help you keep track of your hot pepper plants through their growth cycles.
 
 ## Installation
 ### Clone repo
