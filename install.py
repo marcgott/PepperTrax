@@ -7,12 +7,12 @@ from tables import *
 from werkzeug import generate_password_hash
 
 app.config['DO_INSTALL'] = True
-
+operation="Install"
 @app.route('/install')
 def do_install():
     dbcredform = InstallForm(request.form)
     settingsform = SettingsForm(request.form)
-    return render_template('install.html', is_install=True, settingsform=settingsform, dbcredform=dbcredform,program_name=app.program_name)
+    return render_template('install.html', is_install=True, settingsform=settingsform, dbcredform=dbcredform,program_name=app.program_name,operation=operation)
 
 @app.route('/install/check_db', methods=['POST'])
 def do_install_checkdb():
@@ -65,31 +65,6 @@ def do_install_settings():
         return jsonify({"success":connection.db.decode('utf-8')})
     except pymysql.err.OperationalError as e:
         return jsonify(e.args)
-
-to_reload = False
-
-@app.route('/reload')
-def reload():
-    global to_reload
-    to_reload = True
-    return app
-
-class AppReloader(object):
-    def __init__(self, create_app):
-        self.create_app = create_app
-        self.app = create_app()
-
-    def get_application(self):
-        global to_reload
-        if to_reload:
-            self.app = self.create_app()
-            to_reload = False
-
-        return self.app
-
-    def __call__(self, environ, start_response):
-        app = self.get_application()
-        return app(environ, start_response)
 
 ###
 
