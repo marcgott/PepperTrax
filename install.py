@@ -66,6 +66,31 @@ def do_install_settings():
     except pymysql.err.OperationalError as e:
         return jsonify(e.args)
 
+to_reload = False
+
+@app.route('/reload')
+def reload():
+    global to_reload
+    to_reload = True
+    return app
+
+class AppReloader(object):
+    def __init__(self, create_app):
+        self.create_app = create_app
+        self.app = create_app()
+
+    def get_application(self):
+        global to_reload
+        if to_reload:
+            self.app = self.create_app()
+            to_reload = False
+
+        return self.app
+
+    def __call__(self, environ, start_response):
+        app = self.get_application()
+        return app(environ, start_response)
+
 ###
 
 def parse_sql(filename):
