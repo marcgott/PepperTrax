@@ -7,4 +7,3 @@ app = Flask(__name__)
 app.secret_key = "gardentrax"
 app.settings = {}
 app.program_name="PepperTrax"
-app.settings = get_settings()

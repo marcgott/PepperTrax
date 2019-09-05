@@ -25,6 +25,8 @@ try:
 except ImportError as e:
 	from install import *
 
+app.settings = get_settings()
+
 @app.route('/')
 def show_menu():
 	if 'DO_INSTALL' in app.config:
@@ -176,7 +178,7 @@ class AppReloader(object):
     def __call__(self, environ, start_response):
         app = self.get_application()
         return app(environ, start_response)
-				
+
 app_port = 5000 if 'APP_PORT' not in app.config else app.config['APP_PORT']
 if __name__ == "__main__":
     app.run(use_reloader=True, debug=False, host='0.0.0.0', port=int(app_port))
