@@ -26,7 +26,7 @@ PepperTrax is written in Python. It requires Python 3.5 or higher to run. There 
 - base64
 you can use `apt-get` or `pip` to install them.
 
-### Start Cannatrax
+### Start PepperTrax
 
 ## Run install.py
 
