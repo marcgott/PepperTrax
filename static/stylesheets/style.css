@@ -1,5 +1,9 @@
 * {font-family: 'Lexend Deca', sans-serif;}
-
+@media screen AND (max-width:1000px){
+  *{font-size:0.9em}
+  nav{font-size:1.25em}
+  .report.chart img{max-width:60%}
+}
 a:hover{text-decoration:none}
 body{background-color: #efffef}
 nav {background-color:#7fbb37}
@@ -18,10 +22,10 @@ label {display:block!important}
 #login img {max-width:100%}
 
 #content{max-width:90%;margin:0 auto;padding-bottom:4em;}
-#content h2 {color:#cd2537;font-size:3.4em}
 #content.print{width:100%}
 #content.print img{width:20%}
 #content ul {margin:.5em 0;padding:0}
+.page_header {color:#cd2537;font-size:3.4em;border-bottom:2px solid #cd2537; padding-bottom:0.2em}
 li.info {list-style-type:none;border-left:4px solid #77aa88;background-color:#ddffcc;padding:1em; width:80%}
 li.error {list-style-type:none;border-left:4px solid #aa7788;background-color:#ffccdd;padding:1em; width:80%}
 
@@ -63,7 +67,7 @@ table.main.chart td {padding:0.4em}
 #plant_image {display:inline-block;vertical-align: top;max-width:200px;max-height:200px}
 #plant_image img{border-radius:400px;width:100%}
 
-#daily_log th {background-color:#548727;padding:.01em;color:#ffffff}
+#daily_log th, table.main.chart th {background-color:#548727;padding:.01em;color:#ffffff}
 
 #footer {position:relative;bottom:10px;width:100%;margin:3em auto;text-align:center;padding-top:2em;margin-top:3em;border-top:2px solid #cd2537}
 
