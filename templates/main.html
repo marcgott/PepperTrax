@@ -29,11 +29,13 @@ $(document).ready(function(){
 	})
  })
 </script>
+{% if stagecount !='' %}
 <p><strong>Total {{operation}} by stage:  </strong>
 {% for stage in stagecount %}
 <span style="margin-right:.2em">{{stage.name}}: {{stage.count}}</span>
 {% endfor %}
 </p>
+{% endif %}
 {% endif %}
 
 {{ table }}

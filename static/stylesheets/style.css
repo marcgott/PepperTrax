@@ -1,11 +1,12 @@
 * {font-family: 'Lexend Deca', sans-serif;}
 
+a:hover{text-decoration:none}
 body{background-color: #efffef}
 nav {background-color:#7fbb37}
 label {display:block!important}
 .menu-item {display:inline-block;list-style-type: none;margin:.2em}
 .menu-item a {padding:.4em;color:#fff}
-.menu-item a:hover {background-color:#eeeeee;color:#587e16;text-decoration:none}
+.menu-item a:hover {background-color:#efefef;color:#587e16;text-decoration:none;padding-bottom:.2em;margin-bottom:.1em;border-bottom:.2em solid #cd2537}
 #install {background-color:#dfdfdf;position:absolute;width:60%;top:5%;left:20%;margin:0 auto;border:4px solid #7fbb37;padding:.4em}
 #installform, #settingsform {width:80%;margin:0 auto; }
 #install #logo {width:80%;margin: 0 auto; }
@@ -16,7 +17,8 @@ label {display:block!important}
 #loginform {width:50%;margin:0 auto;}
 #login img {max-width:100%}
 
-#content{max-width:90%;margin:0 auto}
+#content{max-width:90%;margin:0 auto;padding-bottom:4em;}
+#content h2 {color:#cd2537;font-size:3.4em}
 #content.print{width:100%}
 #content.print img{width:20%}
 #content ul {margin:.5em 0;padding:0}
@@ -62,7 +64,8 @@ table.main.chart td {padding:0.4em}
 #plant_image img{border-radius:400px;width:100%}
 
 #daily_log th {background-color:#548727;padding:.01em;color:#ffffff}
-#footer {margin-top:3em}
+
+#footer {position:relative;bottom:10px;width:100%;margin:3em auto;text-align:center;padding-top:2em;margin-top:3em;border-top:2px solid #cd2537}
 
 #charts {display:inline-block}
 .report.chart{display:none}

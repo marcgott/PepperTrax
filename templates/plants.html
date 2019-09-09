@@ -26,8 +26,12 @@
 </div>
 
 <div id="plant_growth_chart">
-	<img src="data:image/png;base64,{{ growth_chart }}"\>
-		<img src="data:image/png;base64,{{ water_chart }}"\>
+{% if growth_chart != None %}
+	<img src="data:image/png;base64,{{ growth_chart }}" />
+{% endif %}
+{% if water_chart != None %}
+		<img src="data:image/png;base64,{{ water_chart }}" />
+{% endif %}
 </div>
 
 

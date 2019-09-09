@@ -1,5 +1,6 @@
 #! /usr/bin/env python3.5
 import pymysql
+import os
 from app import app
 import matplotlib
 import matplotlib.pyplot as plt
@@ -25,7 +26,7 @@ def check_login():
     return True
 
 def get_icons(operation=None):
-    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'cannabis','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast','unknown':'question','male':'mars','female':'venus','hermaphrodite':'venus-mars','grow_medium':'prescription-bottle','lux':'lightbulb','temp':'thermometer-three-quarters','humidity':'cloud-sun-rain','light':'sun','dark':'moon'}
+    icons = {'dashboard':'tachometer-alt','log':'clipboard-check','plants':'leaf','environments':'spa','nutrients':'tint','repellents':'bug','strains':'dna','cycles':'sun','reports':'file-contract','settings':'bars','germination':'egg','seedling':'seedling','vegetation':'leaf','pre-flowering':'spa','flowering':'pepper-hot','harvest':'tractor','archive':'eye-slash','dead':'skull-crossbones','gender':'venus-mars','source':'shipping-fast','unknown':'question','male':'mars','female':'venus','hermaphrodite':'venus-mars','grow_medium':'prescription-bottle','lux':'lightbulb','temp':'thermometer-three-quarters','humidity':'cloud-sun-rain','light':'sun','dark':'moon'}
     return icons
 
 def get_strain_types():
@@ -223,6 +224,16 @@ def get_rank(plant_ID,measure):
     cursor = conn.cursor(pymysql.cursors.DictCursor)
     cursor.execute(sql)
     rows = cursor.fetchall()
-    for row in rows:
-        if row['plant_ID'] == plant_ID:
-            return row
+    if len(rows) > 0:
+        for row in rows:
+            if row['plant_ID'] == plant_ID:
+                return row
+    else:
+        return {'rank':0}
+
+def get_photo_base64(photo):
+    APP_PATH = os.path.dirname(__file__)
+    photopath = 'static/images/%s' % photo
+    with open(os.path.join(APP_PATH,photopath), 'rb') as photo_data:
+        photostream = base64.b64encode(photo_data.read())
+        return photostream.decode('utf8')

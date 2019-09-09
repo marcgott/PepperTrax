@@ -11,7 +11,7 @@ from flask import flash, render_template, request, redirect, session,url_for
 from wtforms import Form, TextField, SelectField, TextAreaField, validators, StringField, SubmitField
 from tables import *
 from forms import *
-from gardentrax import get_measurement_plot
+from gardentrax import get_measurement_plot,get_photo_base64
 operation="Plants"
 icon="leaf"
 
@@ -24,7 +24,7 @@ def show_plants():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name,environment.name as current_environment, plant.source, plant.current_stage, plant.photo FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY cast(plant.name as unsigned) ASC")
+		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name,environment.name as current_environment, plant.source, plant.current_stage, plant.photo FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment ORDER BY plant.name ASC")
 		rows = cursor.fetchall()
 		total_plants = len(rows)
 
@@ -32,10 +32,8 @@ def show_plants():
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
 		cursor.execute(sql)
 		stagecount = cursor.fetchall()
-
 		table = Plant(rows)
 		table.border = True
-
 		return render_template('main.html', table=table, total_count=total_plants, add_operation_url='.add_new_plant_view',icon=icon,stagecount=stagecount,operation=operation,program_name=app.program_name,is_login=session.get('logged_in'))
 	except Exception as e:
 		print(e)
@@ -142,13 +140,12 @@ def edit_plant(id):
 			try:
 				row['photo'] = json.loads(row['photo'])
 			except Exception as e:
-				APP_PATH = os.path.dirname(__file__)
-				with open(os.path.join(APP_PATH,'static/images/photo_default.png'), 'rb') as photo_data:
-					#print( dir(photo_data) )
-					#photo_data.seek(0)  # rewind to beginning of file
-					photo = base64.b64encode(photo_data.read())
-					row['photo'] = {'mimetype':'image/png','data':photo.decode('utf8')}
-				#print(e)
+				#APP_PATH = os.path.dirname(__file__)
+				#with open(os.path.join(APP_PATH,'static/images/photo_default.png'), 'rb') as photo_data:
+					#photo = base64.b64encode(photo_data.read())
+					photo = get_photo_base64('photo_default.png')
+					#photo = photo.decode('utf8')
+					row['photo'] = {'mimetype':'image/png','data':photo}
 
 		else:
 			return 'Error loading #{id}'.format(id=id)
@@ -194,6 +191,8 @@ def view_plant(id):
 		cursor.execute("SELECT plant.id, plant.name as name, plant.gender, strain.name as strain_name, cycle.name as cycle_name, plant.source, plant.grow_medium, environment.name as current_environment, plant.current_stage as current_stage, max(log.height) as current_height, max(log.span) as current_span FROM plant LEFT JOIN strain on strain.id=plant.strain_ID LEFT JOIN cycle ON cycle.id=plant.cycle_ID LEFT JOIN environment ON environment.id=plant.current_environment LEFT JOIN log ON plant.id=log.plant_ID WHERE plant.id=%s", (id,))
 		conn.commit()
 		row = cursor.fetchone()
+		row['current_span'] = 0 if row['current_span'] is None else row['current_span']
+		row['current_height'] = 0 if row['current_height'] is None else row['current_height']
 
 		cursor.execute("SELECT MIN( logdate ) as logdate, stage	FROM log WHERE plant_ID =%s	GROUP BY stage ORDER BY logdate", (id,))
 		conn.commit()
@@ -207,8 +206,17 @@ def view_plant(id):
 		conn.commit()
 		water_dates = cursor.fetchall()
 
-		growth_chart = get_measurement_plot(chart_rows,row['name'],stages=stages)
-		water_chart = get_water_calendar(water_dates,row['name'])
+		water_chart=None
+		growth_chart=None
+
+		print( len(chart_rows))
+		if len(chart_rows) > 0:
+			growth_chart = get_measurement_plot(chart_rows,row['name'],stages=stages)
+			growth_chart = growth_chart.decode('utf8')
+
+		if len(water_dates) > 0:
+			water_chart = get_water_calendar(water_dates,row['name'])
+			water_chart = water_chart.decode('utf8')
 
 		height_rank = get_rank(row['id'],'height')
 		span_rank = get_rank(row['id'],'span')
@@ -228,7 +236,7 @@ def view_plant(id):
 		cursor.close()
 		conn.close()
 
-	return render_template("plants.html",water_chart=water_chart.decode('utf8'),growth_chart=growth_chart.decode('utf8'),icon=get_icons(),option=option,row=row,rows=stages,operation=operation,title_verb=title_verb,height_rank=height_rank['rank']+1,span_rank=span_rank['rank']+1,is_login=session.get('logged_in'))
+	return render_template("plants.html",water_chart=water_chart,growth_chart=growth_chart,icon=get_icons(),option=option,row=row,rows=stages,operation=operation,title_verb=title_verb,height_rank=height_rank['rank']+1,span_rank=span_rank['rank']+1,is_login=session.get('logged_in'))
 
 @app.route('/plant/logs/<int:id>')
 def show_plant_log(id):

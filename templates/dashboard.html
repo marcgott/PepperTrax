@@ -13,9 +13,10 @@
 </p>
 <h3>General Statistics</h3>
 {{ table }}
+{% if settings.latitude != '0' and settings.longitude != '0' %}
 <h3>Daytime Information for {{settings.latitude}}, {{settings.longitude}}</h3>
 Today's Daylight Hours: {{day.day_length}}
-
+{% endif %}
 <h3>Settings</h3>
 {{ settings_table }}
 {% include 'footer.html' %}

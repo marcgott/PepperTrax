@@ -6,8 +6,10 @@ from gardentrax import *
 
 class AddIconCol(Col):
     def td_format(self, content):
-        icon = get_icons()
-        return '<i class="fas fa-%s"></i>  %s' % (icon[content.lower()],content)
+        if content != '':
+            icon = get_icons()
+            return '<i class="fas fa-%s"></i>  %s' % (icon[content.lower()],content)
+        return ''
 
 class PlantLog(Table):
     table_id = 'daily_log'
@@ -45,8 +47,6 @@ class PrintLog(Table):
     soil_pH = Col('pH')
     trim = Col('Trim')
     notes = Col('Notes',column_html_attrs={'class':'printnotes'})
-
-
 
 class Plant(Table):
     classes = ['main','chart','plant']
@@ -104,7 +104,7 @@ class Environment(Table):
     wattage = Col('Wattage')
     grow_area = Col('Grow area')
     containment = Col('Containment')
-    max_plants = Col('Maximum Number of Plants:')
+    max_plants = Col('Maximum Number of Plants')
     edit = LinkCol('Edit', 'edit_environment', url_kwargs=dict(id='id'))
     delete = LinkCol('Delete', 'delete_environment', url_kwargs=dict(id='id'))
 

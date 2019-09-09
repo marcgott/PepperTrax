@@ -62,5 +62,30 @@ $(document).ready(function() {
       isodate = date.toISOString().split('T')
       $('.datefield').val(isodate[0]);
     }
+    if($("#plant_strain").length){
+      $.get("/api/list/strain",function(data){
+        data.sort(function(a,b){
+          return a.name.localeCompare( b.name );
+        })
+        $("#plant_strain select").empty()
+          $.each(data, function(idx,obj){
+            $("#plant_strain select").append('<option value="'+obj.id+'">'+obj.name+'</option>')
+            })
+
+      })
+    }
+    if($("#plant_cycle").length){
+      $.get("/api/list/cycle",function(data){
+        data.sort(function(a,b){
+          return a.name.localeCompare( b.name );
+        })
+        $("#plant_cycle select").empty()
+          $.each(data, function(idx,obj){
+            $("#plant_cycle select").append('<option value="'+obj.id+'">'+obj.name+'</option>')
+            })
+
+      })
+    }
+
 
 });

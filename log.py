@@ -55,7 +55,7 @@ def add_print_log_view():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT name FROM plant  WHERE current_stage NOT IN ('Archive','Dead') ORDER BY CAST(name AS unsigned)")
+		cursor.execute("SELECT id as plant_ID,name FROM plant  WHERE current_stage <> 'Archive' AND current_stage <> 'Dead' ORDER BY CAST(name AS unsigned)")
 		rows = cursor.fetchall()
 		tablerows = []
 		option = get_settings()
@@ -130,12 +130,14 @@ def add_new_log_view():
 	try:
 		conn = mysql.connect()
 		cursor = conn.cursor(pymysql.cursors.DictCursor)
-		cursor.execute("SELECT id as plant_ID,name FROM plant  WHERE current_stage NOT IN ('Archive','Dead') ORDER BY CAST(name AS unsigned)")
+		cursor.execute("SELECT plant.id as plant_ID,plant.name AS name, environment.light_hours as light_hours FROM plant LEFT JOIN environment ON plant.current_environment = environment.id WHERE plant.current_stage <> 'Archive' AND plant.current_stage <> 'Dead' ORDER BY CAST(plant.name AS unsigned)")
 		rows = cursor.fetchall()
+
 		form = LogForm(request.form)
 		envform = EnvironmentLogForm(request.form)
-		envform.light.default = session['daylight']
-		envform.dark.default = session['darkness']
+		envform.light.default = session['daylight'] if session['daylight'] != 'unknown' else 0
+		envform.light.default = rows[0]['light_hours'] if rows[0]['light_hours'] != 'unknown' else 0
+		envform.dark.default = session['darkness'] if session['darkness'] != 'unknown' else 0
 		envform.process()
 	except Exception as e:
 		print(e)
